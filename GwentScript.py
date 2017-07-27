@@ -13,7 +13,7 @@ class Unit:
         self.armor = 0
     def deployUnit(self,target = False):                                #DEPLOY ABILITY FOR CARD
         '''target optional'''
-        if(self.deploy[0])=='d' and target!= False:
+        if(self.deploy[0])=='d' and target!= False and (not(isGolden(target))):
             target['power'] = target['power'] - int(self.deploy[1])
 ####################################
 class Special:
@@ -39,9 +39,9 @@ class Card:
             game.weather[int(target[0])][target[1]] = self.unit.ability[1]  #CAST WEATHER
     def summon(self,game,player,row,pos):                                   #SUMMON UNIT FROM CARD
         if(self.unit.row=='a'):
-            game.board[player][row].insert(pos,{'name':self.unit.name,'power':self.unit.power,'unit':self.unit})
+            game.board[player][row].insert(pos,{'name':self.unit.name,'power':self.unit.power,'color':self.unit.color,'base':self.unit.base,'unit':self.unit})
         else:
-            game.board[player][self.unit.row].insert(pos,{'name':self.unit.name,'power':self.unit.power,'unit':self.unit})
+            game.board[player][self.unit.row].insert(pos,{'name':self.unit.name,'power':self.unit.power,'color':self.unit.color,'base':self.unit.base,'unit':self.unit})
 
 
 #0 is self
@@ -101,7 +101,7 @@ class GameBoard:
         units = []
         auxRow = self.board[side][row][:]
         for unit in auxRow:
-            if(unit['power']) == maxUnit:
+            if((unit['power']) == maxUnit) and (not(isGolden(unit))):
                 units.append(auxRow.index(unit))
                 auxRow[auxRow.index(unit)] = 0
         return units
@@ -111,7 +111,7 @@ class GameBoard:
         units = []
         auxRow = self.board[side][row][:]
         for unit in auxRow:
-            if(unit['power']) == minUnit:
+            if((unit['power']) == minUnit) and (not(isGolden(unit))):
                 units.append(auxRow.index(unit))
                 auxRow[auxRow.index(unit)] = 0
         return units
@@ -119,10 +119,11 @@ class GameBoard:
         units = []
         auxRow = self.board[side][row][:]
         for unit in auxRow:
-            units.append(auxRow.index(unit))
-            auxRow[auxRow.index(unit)] = 0
-        print(units)
+            if(not(isGolden(unit))):
+                units.append(auxRow.index(unit))
+                auxRow[auxRow.index(unit)] = 0
         return units
+
             
 ###########################################################################################################
 class Hand:
@@ -149,6 +150,10 @@ class Deck:
         for i in range(0,number):
             hand.cards = hand.cards + [self.cards.pop(0)] #DRAW A CARD FROM DECK
 
+###################################                 CARD PROPERTIES FUNCTION
 
-
-
+def isGolden(unit):
+    if(unit['color']=='g'):
+       return True
+    else:
+       return False
