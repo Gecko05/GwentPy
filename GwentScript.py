@@ -1,3 +1,6 @@
+########################################################################################################
+#                               GWENT-PY        GECKO05      26/07/17                                  #
+########################################################################################################
 class Unit:
     def __init__(self,name,base,deploy,color,row,loyal):
         self.name = name
@@ -12,12 +15,12 @@ class Unit:
         '''target optional'''
         if(self.deploy[0])=='d' and target!= False:
             target['power'] = target['power'] - int(self.deploy[1])
-
+####################################
 class Special:
     def __init__(self,name,ability):
         self.name = name
         self.ability = ability
-
+####################################
 class Card:
     def __init__(self,name,unit,special=False):
         self.name = name
@@ -37,6 +40,7 @@ class Card:
 
 #0 is self
 #1 is enemy
+########################################################################################################
 class GameBoard:
     def __init__(self):
         self.board = [{"s":[],"r":[],"m":[]},{"s":[],"r":[],"m":[]}]
@@ -94,7 +98,7 @@ class GameBoard:
                 auxRow[auxRow.index(unit)] = 0
         return units
             
-
+###########################################################################################################
 class Hand:
     def __init__(self,cards):
         self.cards = cards
@@ -108,7 +112,7 @@ class Hand:
     def display(self):
         for card in self.cards:
             print(card.name)
-    
+####################################    
 class Deck:
     def __init__(self,cards):
         self.cards = cards
