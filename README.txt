@@ -1,8 +1,8 @@
 # GwentPy
 Gwent in Python
 
-This is a work in progress for "Gwent The Witcher Card Game" conversion to Python for AI testing purposes\n
-Implemented Features:\n
+This is a work in progress for "Gwent The Witcher Card Game" conversion to Python for AI testing purposes
+Implemented Features:
   Decks
   Units
   Special Damage Dealing Cards
@@ -15,8 +15,8 @@ Implemented Features:\n
   Graveyards
   Played Cards
   Destroyed Units
-\n
-Working on:\n
+
+Working on:
   Resurrect Units
   Adjacent targeting
   Weakening/Strengthening
