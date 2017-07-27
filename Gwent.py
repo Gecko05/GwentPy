@@ -22,7 +22,7 @@ Game.display()
 Game.board[1]['s'][0]['unit'].deployUnit(Game.board[0]['r'][0])
 Game.board[1]['s'][1]['unit'].deployUnit(Game.board[0]['r'][0])
 
-TorrentialRain.cast(Game,0,'1s')
+BitingFrost.cast(Game,0,'1s')
 
 Game.display()
 Game.update()

@@ -1,6 +1,8 @@
 ########################################################################################################
 #                               GWENT-PY        GECKO05      26/07/17                                  #
 ########################################################################################################
+import random
+
 class Unit:
     def __init__(self,name,base,deploy,color,row,loyal):
         self.name = name
@@ -56,15 +58,25 @@ class GameBoard:
         self.graveyard = {0:[],1:[]}
     def change(self,board,player):
         self.board[player] = board
-    def tick(self):
-        for side in self.board:
-            for row in side:
-                if(self.weather[self.board.index(side)][row]=='r'):             #TORRENTIAL RAIN WEATHER
-                    minunits = self.getRowMin(self.board.index(side),row)
+    def tick(self,turnphase,side):
+        if(turnphase=='start'):
+            for row in self.board[side]:
+                if(self.weather[side][row]=='r'):             #TORRENTIAL RAIN WEATHER
+                    minunits = self.getRowMinUnits(side,row)
                     if(minunits!=[]):
                         for unitpos in minunits:
-                            self.board[self.board.index(side)][row][unitpos]['power'] = self.board[self.board.index(side)][row][unitpos]['power']-1
-        
+                            self.board[side][row][unitpos]['power'] = self.board[side][row][unitpos]['power']-1
+                if(self.weather[side][row]=='b'):             #BITING FROST DAMAGE
+                    minunits = self.getRowMinUnits(side,row)
+                    if(minunits!=[]):
+                        unitpos = random.choice(minunits)
+                        self.board[side][row][unitpos]['power'] = self.board[side][row][unitpos]['power']-2
+                if(self.weather[side][row]=='f'):             #IMPENETRABLE FOG DAMAGE
+                    maxunits = self.getRowMaxUnits(side,row)
+                    if(maxunits!=[]):
+                        unitpos = random.choice(maxunits)
+                        self.board[side][row][unitpos]['power'] = self.board[side][row][unitpos]['power']-2
+
     def update(self):                        #UPDATE DESTROYED UNITS
         for side in self.board:
             for row in side:
@@ -96,7 +108,7 @@ class GameBoard:
                     print(unit['name'] + '/' + str(unit['power']),end=" ")
             print('\n')
 
-    def getRowMax(self,side,row):
+    def getRowMaxUnits(self,side,row):
         maxUnit = max(self.board[side][row],key=lambda x:x['power'])['power'] #GET MAX POWER ON THE ROW
         units = []
         auxRow = self.board[side][row][:]
@@ -106,7 +118,7 @@ class GameBoard:
                 auxRow[auxRow.index(unit)] = 0
         return units
     
-    def getRowMin(self,side,row):
+    def getRowMinUnits(self,side,row):
         minUnit = min(self.board[side][row],key=lambda x:x['power'])['power'] #GET MIN POWER ON THE ROW
         units = []
         auxRow = self.board[side][row][:]
