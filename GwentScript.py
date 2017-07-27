@@ -31,11 +31,11 @@ class Card:
             target['power'] = target['power'] - int(self.unit.ability[1])
         elif(self.unit.ability[0])=='w' and target!=False:
             game.weather[int(target[0])][target[1]] = self.unit.ability[1]  #CAST WEATHER
-    def summon(self,game,player,row):                                   #SUMMON UNIT FROM CARD
+    def summon(self,game,player,row,pos):                                   #SUMMON UNIT FROM CARD
         if(self.unit.row=='a'):
-            game.board[player][row].append({'name':self.unit.name,'power':self.unit.power,'unit':self.unit})
+            game.board[player][row].insert(pos,{'name':self.unit.name,'power':self.unit.power,'unit':self.unit})
         else:
-            game.board[player][self.unit.row].append({'name':self.unit.name,'power':self.unit.power,'unit':self.unit})
+            game.board[player][self.unit.row].insert(pos,{'name':self.unit.name,'power':self.unit.power,'unit':self.unit})
 
 
 #0 is self
@@ -102,10 +102,10 @@ class GameBoard:
 class Hand:
     def __init__(self,cards):
         self.cards = cards
-    def use(self,game,card,player,target='none',row='m'):                   #USE CARD FROM HAND
+    def use(self,game,card,player,pos=0,target='none',row='m'):                   #USE CARD FROM HAND
         '''myHand.use(CurrentGame,myHand.cards[2],0)'''
         if(card.special==False):
-            card.summon(game,player,row)                    #SUMMON UNIT CARDS
+            card.summon(game,player,row,pos)                    #SUMMON UNIT CARDS
         elif(card.special==True):
             card.cast(game,player,target)                   #CAST SPECIAL CARDS
         game.played[player].append(self.cards.pop(self.cards.index(card))) #REMOVE A CARD FROM HAND

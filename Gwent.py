@@ -11,11 +11,11 @@ enemyDeck = Deck([AlzursThunder,Wyvern,Wyvern])
 enemyHand = Hand([])
 enemyDeck.draw(enemyHand,3)
 
-myHand.use(Game,myHand.cards[0],0,'none','r')
+myHand.use(Game,myHand.cards[0],0,0,'none','r')
 
-enemyHand.use(Game,enemyHand.cards[0],1,Game.board[0]['r'][0])
-enemyHand.use(Game,enemyHand.cards[0],1)
-enemyHand.use(Game,enemyHand.cards[0],1)
+enemyHand.use(Game,enemyHand.cards[0],1,0,Game.board[0]['r'][0])
+enemyHand.use(Game,enemyHand.cards[0],1,0)
+enemyHand.use(Game,enemyHand.cards[0],1,0)
 
 Game.display()
 
