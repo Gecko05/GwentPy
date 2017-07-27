@@ -28,3 +28,5 @@ Game.display()
 Game.update()
 
 print(Game.score)
+
+Lacerate.cast(Game,0,'1s')

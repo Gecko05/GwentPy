@@ -27,8 +27,14 @@ class Card:
         self.unit = unit
         self.special = special
     def cast(self,game,player,target):                                  #CAST FOR SPECIAL CARDS
-        if(self.unit.ability[0])=='d' and target!= False:
-            target['power'] = target['power'] - int(self.unit.ability[1])
+        if(self.unit.ability[0])=='d' and target!= False:               #DAMAGE
+            if(self.unit.ability[2])=='e':                              #SINGLE TARGET
+                target['power'] = target['power'] - int(self.unit.ability[1])
+            elif(self.unit.ability[2])=='r':                            #ROW DAMAGE
+                side = int(target[0])
+                row = target[1]
+                for unitpos in game.getRowUnits(side,row):
+                    game.board[side][row][unitpos]['power'] = game.board[side][row][unitpos]['power'] - int(self.unit.ability[1])
         elif(self.unit.ability[0])=='w' and target!=False:
             game.weather[int(target[0])][target[1]] = self.unit.ability[1]  #CAST WEATHER
     def summon(self,game,player,row,pos):                                   #SUMMON UNIT FROM CARD
@@ -54,7 +60,7 @@ class GameBoard:
         for side in self.board:
             for row in side:
                 if(self.weather[self.board.index(side)][row]=='r'):             #TORRENTIAL RAIN WEATHER
-                    minunits = self.getRowMax(self.board.index(side),row)
+                    minunits = self.getRowMin(self.board.index(side),row)
                     if(minunits!=[]):
                         for unitpos in minunits:
                             self.board[self.board.index(side)][row][unitpos]['power'] = self.board[self.board.index(side)][row][unitpos]['power']-1
@@ -72,11 +78,23 @@ class GameBoard:
                 for unit in side[row]:
                     self.score[self.board.index(side)] = self.score[self.board.index(side)] + unit['power']
 
-    def display(self):                      #DISPLAY THE CURRENT BOARD
+    def display(self):                 #####DISPLAY THE CURRENT BOARD######
+        print('===============')
         for side in self.board:
+            if(side==self.board[0]):
+                print('--- Player ---')
+            else:
+                print('--- Enemy ---')
             for row in side:
+                if(row=='m'):
+                    print('\nMelee --',end=' ')
+                elif(row=='r'):
+                    print('\nRange --',end=' ')
+                else:
+                    print('\nSiege --',end=' ')
                 for unit in side[row]:
-                    print(unit['name'] + ' ' + str(unit['power']))
+                    print(unit['name'] + '/' + str(unit['power']),end=" ")
+            print('\n')
 
     def getRowMax(self,side,row):
         maxUnit = max(self.board[side][row],key=lambda x:x['power'])['power'] #GET MAX POWER ON THE ROW
@@ -96,6 +114,14 @@ class GameBoard:
             if(unit['power']) == minUnit:
                 units.append(auxRow.index(unit))
                 auxRow[auxRow.index(unit)] = 0
+        return units
+    def getRowUnits(self,side,row):
+        units = []
+        auxRow = self.board[side][row][:]
+        for unit in auxRow:
+            units.append(auxRow.index(unit))
+            auxRow[auxRow.index(unit)] = 0
+        print(units)
         return units
             
 ###########################################################################################################
