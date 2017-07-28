@@ -4,7 +4,7 @@
 import random
 
 class Unit:
-    def __init__(self,name,base,deploy,color,row,loyal):
+    def __init__(self,name,base,deploy,color,row,loyal,doom='N',stub='N',dw=''):
         self.name = name
         self.base = base
         self.deploy = deploy
@@ -13,6 +13,9 @@ class Unit:
         self.loyal = loyal
         self.power = base
         self.armor = 0
+        self.doom = doom
+        self.stub = stub
+        self.dw = dw
     def deployUnit(self,target = False):                                #DEPLOY ABILITY FOR CARD
         '''target optional'''
         if(self.deploy[0])=='d' and target!= False and (not(isGolden(target))):
@@ -77,12 +80,17 @@ class GameBoard:
                         unitpos = random.choice(maxunits)
                         self.board[side][row][unitpos]['power'] = self.board[side][row][unitpos]['power']-2
 
-    def update(self):                        #UPDATE DESTROYED UNITS
+    def update(self):                        #UPDATE DESTROYED/BANISHED UNITS
         for side in self.board:
             for row in side:
                 for unit in side[row]:
                     if(unit['power']<=0):
-                        self.graveyard[self.board.index(side)].append(side[row].pop(side[row].index(unit)))
+                        if(unit['unit'].doom == 'D'):
+                            side[row].pop(side[row].index(unit))
+                        else: 
+                            self.graveyard[self.board.index(side)].append(side[row].pop(side[row].index(unit)))
+                            self.graveyard[self.board.index(side)][-1]['power'] = self.graveyard[self.board.index(side)][-1]['base']
+                            
 
         self.score = [0,0]                   #UPDATE SCORE
         for side in self.board:
