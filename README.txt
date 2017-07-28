@@ -17,6 +17,7 @@ Implemented Features:
   Destroyed Units
 
 Working on:
+  Factions
   Resurrect Units
   Adjacent targeting
   Weakening/Strengthening
