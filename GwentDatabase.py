@@ -3,6 +3,7 @@
 ########################################################################################################
 from GwentScript import *
 #Unit(name,base pwr,deploy,color,row,loyal,doom,stubborn,deathwish)
+#   Special(name,ability,color,doom)
 #       w = weather
 #       d = damage
 wyvern = Unit("wyvern",6,"d3e",'b','s')
@@ -32,7 +33,7 @@ Spores = Card("spores",spores,True)
 mardroeme = Special("mardroeme",['x',Mutagen,Spores],'b',True)
 Mardroeme = Card("mardroeme",mardroeme,True)
 
-clearSkies = Special("clearSkies","wc",'b')
+clearSkies = Special("clearSkies","wc",'b',True)
 rally = Special("rally","srbu",'b',)
 ClearSkies = Card("clearSkies",clearSkies,True)
 Rally = Card("rally",rally,True)

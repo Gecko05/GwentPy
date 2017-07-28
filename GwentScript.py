@@ -53,10 +53,12 @@ class Card:
         elif(self.unit.ability[0])=='b' and target!=False and not(isGolden(target)):
             target['power'] = target['power'] + int(self.unit.ability[1])   #BOOST SPECIAL CARD
         elif(self.unit.ability[0])=='x':
-            print(self.unit.name)
-            self.unit.ability[sel].cast(game,player,target,sel)
+            self.unit.ability[sel].cast(game,player,target,sel)             #CAST INSIDE SPECIAL
+        elif(self.unit.ability[0])=='t' and target!= False and not(isGolden(target)):
+            target['power'] = target['base'] + int(self.unit.ability[1])
+            target['base'] = target['base'] + int(self.unit.ability[1])
         if(self.unit.doom==False):
-            game.graveyard[player].insert(0,self.unit)
+            game.graveyard[player].insert(0,self.unit)                      #SEND SPECIAL TO GRAVEYARD
             
     def summon(self,game,player,row,pos):                                   #SUMMON UNIT FROM CARD
         if(self.unit.row=='a'):

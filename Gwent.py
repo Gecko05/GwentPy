@@ -4,8 +4,8 @@ from GwentScript import *
 Game = GameBoard()
 
 myHand = Hand([])
-myDeck = Deck([AncientFoglet,SwallowPotion,BitingFrost])
-myDeck.draw(myHand,3)
+myDeck = Deck([AncientFoglet,SwallowPotion,BitingFrost,Mardroeme])
+myDeck.draw(myHand,4)
 
 enemyDeck = Deck([Wyvern,AlzursThunder,FirstLight])
 enemyHand = Hand([])
@@ -35,6 +35,9 @@ Game.tick('start',1)
 
 #USE CLEAR SKIES FROM FIRST LIGHT
 enemy.play(FirstLight,0,False,'m',1)
+
+#PLAYER USES MARDROEME MUTAGEN ON ANCIENT FOGLET
+me.play(Mardroeme,0,Game.board[0]['r'][0],False,1)
 
 Game.update()
 Game.display()
