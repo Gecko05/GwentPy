@@ -19,7 +19,8 @@ enemy = Player(Game,enemyHand,1)
 me.play(AncientFoglet,0,False,'r')
 
 #PLAY WYVERN IN SIEGE AND ATTACK ENEMY FOGLET IN RANGE
-enemyHand.use(Game,enemyHand.cards[0],1,0,Game.board[0]['r'][0],'s')
+enemy.play(Wyvern,0,Game.board[0]['r'][0])
+#enemyHand.use(Game,enemyHand.cards[0],1,0,Game.board[0]['r'][0],'s')
 
 #USE SWALLOW POTION ON ANCIENT FOGLET
 myHand.use(Game,myHand.cards[0],0,0,Game.board[0]['r'][0])

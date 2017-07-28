@@ -3,6 +3,7 @@
 ########################################################################################################
 import random
 
+
 class Unit:
     def __init__(self,name,base,deploy,color,row,loyal='L',doom='N',stub='N',dw='',tick=''):
         self.name = name
@@ -126,31 +127,40 @@ class GameBoard:
             print('\n')
 
     def getRowMaxUnits(self,side,row):
-        maxUnit = max(self.board[side][row],key=lambda x:x['power'])['power'] #GET MAX POWER ON THE ROW
-        units = []
-        auxRow = self.board[side][row][:]
-        for unit in auxRow:
-            if((unit['power']) == maxUnit) and (not(isGolden(unit))):
-                units.append(auxRow.index(unit))
-                auxRow[auxRow.index(unit)] = 0
+        if(self.board[side][row]!=[]):
+            maxUnit = max(self.board[side][row],key=lambda x:x['power'])['power'] #GET MAX POWER ON THE ROW
+            units = []
+            auxRow = self.board[side][row][:]
+            for unit in auxRow:
+                if((unit['power']) == maxUnit) and (not(isGolden(unit))):
+                    units.append(auxRow.index(unit))
+                    auxRow[auxRow.index(unit)] = 0
+        else:
+            units = []
         return units
     
     def getRowMinUnits(self,side,row):
-        minUnit = min(self.board[side][row],key=lambda x:x['power'])['power'] #GET MIN POWER ON THE ROW
-        units = []
-        auxRow = self.board[side][row][:]
-        for unit in auxRow:
-            if((unit['power']) == minUnit) and (not(isGolden(unit))):
-                units.append(auxRow.index(unit))
-                auxRow[auxRow.index(unit)] = 0
+        if(self.board[side][row]!=[]):
+            minUnit = min(self.board[side][row],key=lambda x:x['power'])['power'] #GET MIN POWER ON THE ROW
+            units = []
+            auxRow = self.board[side][row][:]
+            for unit in auxRow:
+                if((unit['power']) == minUnit) and (not(isGolden(unit))):
+                    units.append(auxRow.index(unit))
+                    auxRow[auxRow.index(unit)] = 0
+        else:
+            units = []
         return units
     def getRowUnits(self,side,row):
-        units = []
-        auxRow = self.board[side][row][:]
-        for unit in auxRow:
-            if(not(isGolden(unit))):
-                units.append(auxRow.index(unit))
-                auxRow[auxRow.index(unit)] = 0
+        if(self.board[side][row]!=[]):
+            units = []
+            auxRow = self.board[side][row][:]
+            for unit in auxRow:
+                if(not(isGolden(unit))):
+                    units.append(auxRow.index(unit))
+                    auxRow[auxRow.index(unit)] = 0
+        else:
+            units = []
         return units
         
 
@@ -161,12 +171,15 @@ class Hand:
         self.cards = cards
     def use(self,game,card,player,pos=0,target=False,row='m',sel=0):                   #USE CARD FROM HAND
         '''myHand.use(CurrentGame,myHand.cards[2],0)'''
-        if(card.special==False and target!='none'):
-            card.summon(game,player,row,pos)                    #SUMMON UNIT CARDS
-            game.board[player][row][pos]['unit'].deployUnit(target) #DEPLOY UNIT WITH TARGET
-        elif(card.special==False and target=='none'):
-            card.summon(game,player,row,pos)
-            game.board[player][row][pos]['unit'].deployUnit()       #DEPLOY UNIT TARGETLESS
+        if(card.special==False):
+            if(card.unit.row!='a'):
+                row = card.unit.row
+            if(target!=False):
+                card.summon(game,player,row,pos)                    #SUMMON UNIT CARDS
+                game.board[player][row][pos]['unit'].deployUnit(target) #DEPLOY UNIT WITH TARGET
+            elif(target==False):
+                card.summon(game,player,row,pos)
+                game.board[player][row][pos]['unit'].deployUnit()       #DEPLOY UNIT TARGETLESS
         elif(card.special==True):
             card.cast(game,player,target,sel)                           #CAST SPECIAL CARDS
         game.played[player].append(self.cards.pop(self.cards.index(card))) #REMOVE A CARD FROM HAND
@@ -187,11 +200,11 @@ class Deck:
 ###################################
 class Player:
     def __init__(self,game,hand,num):
-        Player.hand = hand
-        Player.num = num
-        Player.game = game
+        self.hand = hand
+        self.num = num
+        self.game = game
     def play(self,card,pos=0,target=False,row='m',sel=0):
-        Player.hand.use(self.game,self.hand.cards[CardPos(card,self.hand)],self.num,pos,target,row,sel)
+        self.hand.use(self.game,self.hand.cards[CardPos(card,self.hand)],self.num,pos,target,row,sel)
         
 
 ###################################                 CARD PROPERTIES FUNCTION
