@@ -11,17 +11,21 @@ ancientFoglet = Unit("ancientFoglet",7,'n','b','a')
 AncientFoglet = Card("ancientFoglet",ancientFoglet)
 
 torrentialRain = Special("torrentialRain","wr")
-TorrentialRain = Card("torrentialRain",torrentialRain,True)
+TorrentialRain = Card("torrentialRain",[torrentialRain],True)
 bitingFrost = Special("bitingFrost","wb")
-BitingFrost = Card("bitingFrost",bitingFrost,True)
+BitingFrost = Card("bitingFrost",[bitingFrost],True)
 impenetrableFog = Special("impenetrableFog","wf")
-ImpenetrableFog = Card("impenetrableFog",impenetrableFog,True)
+ImpenetrableFog = Card("impenetrableFog",[impenetrableFog],True)
 
 alzursThunder = Special("alzursThunder","d7e")
-AlzursThunder = Card("alzursThunder",alzursThunder,True)
+AlzursThunder = Card("alzursThunder",[alzursThunder],True)
 lacerate = Special("lacerate","d3r")
-Lacerate = Card("lacerate",lacerate,True)
+Lacerate = Card("lacerate",[lacerate],True)
 
 swallowPotion = Special("swallowPotion","b8u")
-SwallowPotion = Card("swallowPotion",swallowPotion,True)
+SwallowPotion = Card("swallowPotion",[swallowPotion],True)
+
+clearSkies = Special("clearSkies","wc")
+rally = Special("rally","srbu")
+FirstLight = Card("firstLight",[clearSkies,rally],True)
 

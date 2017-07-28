@@ -7,12 +7,16 @@ myHand = Hand([])
 myDeck = Deck([AncientFoglet,SwallowPotion,BitingFrost])
 myDeck.draw(myHand,3)
 
-enemyDeck = Deck([Wyvern,AlzursThunder])
+enemyDeck = Deck([Wyvern,AlzursThunder,FirstLight])
 enemyHand = Hand([])
-enemyDeck.draw(enemyHand,2)
+enemyDeck.draw(enemyHand,3)
+
+me = Player(Game,myHand,0)
+enemy = Player(Game,enemyHand,1)
 
 #myHand.use('Ancient Foglet',0,'r')
-myHand.use(Game,myHand.cards[0],0,0,'none','r') #PLAY FOGLET IN RANGE ROW
+#myHand.use(Game,myHand.cards[0],0,0,'none','r') #PLAY FOGLET IN RANGE ROW
+me.play(AncientFoglet,0,False,'r')
 
 #PLAY WYVERN IN SIEGE AND ATTACK ENEMY FOGLET IN RANGE
 enemyHand.use(Game,enemyHand.cards[0],1,0,Game.board[0]['r'][0],'s')
@@ -25,6 +29,11 @@ enemyHand.use(Game,enemyHand.cards[0],1,0,Game.board[0]['r'][0])
 
 #USE BITING FROST ON ENEMY WYVERN
 myHand.use(Game,myHand.cards[0],0,0,'1s')
+
+Game.tick('start',1)
+
+#USE CLEAR SKIES FROM FIRST LIGHT
+enemyHand.use(Game,enemyHand.cards[0],0,'none',False,0)
 
 Game.update()
 Game.display()

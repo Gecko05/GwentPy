@@ -16,7 +16,7 @@ class Unit:
         self.doom = doom
         self.stub = stub
         self.dw = dw
-        self.resi = True
+        self.resi = False
         self.lock = False
         self.tick = tick
     def deployUnit(self,target = False):                                #DEPLOY ABILITY FOR CARD
@@ -34,19 +34,22 @@ class Card:
         self.name = name
         self.unit = unit
         self.special = special
-    def cast(self,game,player,target):                                  #CAST FOR SPECIAL CARDS
-        if(self.unit.ability[0])=='d' and target!= False:               #DAMAGE
-            if(self.unit.ability[2])=='e':                              #SINGLE TARGET
-                target['power'] = target['power'] - int(self.unit.ability[1])
-            elif(self.unit.ability[2])=='r':                            #ROW DAMAGE
+    def cast(self,game,player,target,sel=0):                                  #CAST FOR SPECIAL CARDS
+        if(self.unit[sel].ability[0])=='d' and target!= False and not(isGolden(target)):               #DAMAGE
+            if(self.unit[sel].ability[2])=='e':                              #SINGLE TARGET
+                target['power'] = target['power'] - int(self.unit[sel].ability[1])
+            elif(self.unit[sel].ability[2])=='r':                            #ROW DAMAGE
                 side = int(target[0])
                 row = target[1]
                 for unitpos in game.getRowUnits(side,row):
-                    game.board[side][row][unitpos]['power'] = game.board[side][row][unitpos]['power'] - int(self.unit.ability[1])
-        elif(self.unit.ability[0])=='w' and target!=False:
-            game.weather[int(target[0])][target[1]] = self.unit.ability[1]  #CAST WEATHER
-        elif(self.unit.ability[0])=='b' and target!=False:
-            target['power'] = target['power'] + int(self.unit.ability[1])
+                    game.board[side][row][unitpos]['power'] = game.board[side][row][unitpos]['power'] - int(self.unit[sel].ability[1])
+        elif(self.unit[sel].ability[0])=='w' and target!=False:
+            game.weather[int(target[0])][target[1]] = self.unit[sel].ability[1]  #CAST WEATHER
+        elif(self.unit[sel].ability)=='wc':
+            game.weather[player] = {"s":0,"r":0,"m":0}                           #CLEAR WEATHER       
+        elif(self.unit[sel].ability[0])=='b' and target!=False and not(isGolden(target)):
+            target['power'] = target['power'] + int(self.unit[sel].ability[1])   #BOOST SPECIAL CARD
+        game.graveyard[player].insert(0,self.unit[sel])
     def summon(self,game,player,row,pos):                                   #SUMMON UNIT FROM CARD
         if(self.unit.row=='a'):
             game.board[player][row].insert(pos,{'name':self.unit.name,'power':self.unit.power,'color':self.unit.color,'base':self.unit.base,'unit':self.unit})
@@ -94,8 +97,8 @@ class GameBoard:
                         if(unit['unit'].doom == 'D'):
                             side[row].pop(side[row].index(unit))
                         else: 
-                            self.graveyard[self.board.index(side)].append(side[row].pop(side[row].index(unit)))
-                            self.graveyard[self.board.index(side)][-1]['power'] = self.graveyard[self.board.index(side)][-1]['base']
+                            self.graveyard[self.board.index(side)].insert(0,side[row].pop(side[row].index(unit)))
+                            self.graveyard[self.board.index(side)][0]['power'] = self.graveyard[self.board.index(side)][0]['base']
                             
 
         self.score = [0,0]                   #UPDATE SCORE
@@ -149,13 +152,14 @@ class GameBoard:
                 units.append(auxRow.index(unit))
                 auxRow[auxRow.index(unit)] = 0
         return units
+        
 
             
 ###########################################################################################################
 class Hand:
     def __init__(self,cards):
         self.cards = cards
-    def use(self,game,card,player,pos=0,target='none',row='m'):                   #USE CARD FROM HAND
+    def use(self,game,card,player,pos=0,target=False,row='m',sel=0):                   #USE CARD FROM HAND
         '''myHand.use(CurrentGame,myHand.cards[2],0)'''
         if(card.special==False and target!='none'):
             card.summon(game,player,row,pos)                    #SUMMON UNIT CARDS
@@ -164,7 +168,7 @@ class Hand:
             card.summon(game,player,row,pos)
             game.board[player][row][pos]['unit'].deployUnit()       #DEPLOY UNIT TARGETLESS
         elif(card.special==True):
-            card.cast(game,player,target)                           #CAST SPECIAL CARDS
+            card.cast(game,player,target,sel)                           #CAST SPECIAL CARDS
         game.played[player].append(self.cards.pop(self.cards.index(card))) #REMOVE A CARD FROM HAND
     def display(self):
         for card in self.cards:
@@ -180,6 +184,16 @@ class Deck:
         for i in range(0,number):
             hand.cards = hand.cards + [self.cards.pop(0)] #DRAW A CARD FROM DECK
 
+###################################
+class Player:
+    def __init__(self,game,hand,num):
+        Player.hand = hand
+        Player.num = num
+        Player.game = game
+    def play(self,card,pos=0,target=False,row='m',sel=0):
+        Player.hand.use(self.game,self.hand.cards[CardPos(card,self.hand)],self.num,pos,target,row,sel)
+        
+
 ###################################                 CARD PROPERTIES FUNCTION
 
 def isGolden(unit):
@@ -187,3 +201,7 @@ def isGolden(unit):
        return True
     else:
        return False
+
+#----------------------------------
+def CardPos(card,hand):
+    return hand.cards.index(card)
