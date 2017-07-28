@@ -23,18 +23,18 @@ enemy.play(Wyvern,0,Game.board[0]['r'][0])
 #enemyHand.use(Game,enemyHand.cards[0],1,0,Game.board[0]['r'][0],'s')
 
 #USE SWALLOW POTION ON ANCIENT FOGLET
-myHand.use(Game,myHand.cards[0],0,0,Game.board[0]['r'][0])
+me.play(SwallowPotion,0,Game.board[0]['r'][0])
 
 #USE ALZUR'S THUNDER ON ANCIENT FOGLET
-enemyHand.use(Game,enemyHand.cards[0],1,0,Game.board[0]['r'][0])
+enemy.play(AlzursThunder,0,Game.board[0]['r'][0])
 
 #USE BITING FROST ON ENEMY WYVERN
-myHand.use(Game,myHand.cards[0],0,0,'1s')
+me.play(BitingFrost,0,'1s')
 
 Game.tick('start',1)
 
 #USE CLEAR SKIES FROM FIRST LIGHT
-enemyHand.use(Game,enemyHand.cards[0],0,'none',False,0)
+enemy.play(FirstLight,0,False,'m',0)
 
 Game.update()
 Game.display()
