@@ -34,7 +34,7 @@ me.play(BitingFrost,0,'1s')
 Game.tick('start',1)
 
 #USE CLEAR SKIES FROM FIRST LIGHT
-enemy.play(FirstLight,0,False,'m',0)
+enemy.play(FirstLight,0,False,'m',1)
 
 Game.update()
 Game.display()
