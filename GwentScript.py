@@ -70,24 +70,6 @@ class GameBoard:
         self.graveyard = {0:[],1:[]}
     def change(self,board,player):
         self.board[player] = board
-    def tick(self,turnphase,side):
-        if(turnphase=='start'):
-            for row in self.board[side]:
-                if(self.weather[side][row]=='r'):             #TORRENTIAL RAIN WEATHER
-                    minunits = self.getRowMinUnits(side,row)
-                    if(minunits!=[]):
-                        for unitpos in minunits:
-                            self.board[side][row][unitpos]['power'] = self.board[side][row][unitpos]['power']-1
-                if(self.weather[side][row]=='b'):             #BITING FROST DAMAGE
-                    minunits = self.getRowMinUnits(side,row)
-                    if(minunits!=[]):
-                        unitpos = random.choice(minunits)
-                        self.board[side][row][unitpos]['power'] = self.board[side][row][unitpos]['power']-2
-                if(self.weather[side][row]=='f'):             #IMPENETRABLE FOG DAMAGE
-                    maxunits = self.getRowMaxUnits(side,row)
-                    if(maxunits!=[]):
-                        unitpos = random.choice(maxunits)
-                        self.board[side][row][unitpos]['power'] = self.board[side][row][unitpos]['power']-2
 
     def update(self):                        #UPDATE DESTROYED/BANISHED UNITS
         for side in self.board:
@@ -106,6 +88,26 @@ class GameBoard:
             for row in side:
                 for unit in side[row]:
                     self.score[self.board.index(side)] = self.score[self.board.index(side)] + unit['power']
+                    
+    def tick(self,turnphase,side):
+        if(turnphase=='start'):
+            for row in self.board[side]:
+                if(self.weather[side][row]=='r'):             #TORRENTIAL RAIN WEATHER
+                    minunits = self.getRowMinUnits(side,row)
+                    if(minunits!=[]):
+                        for unitpos in minunits:
+                            self.board[side][row][unitpos]['power'] = self.board[side][row][unitpos]['power']-1
+                if(self.weather[side][row]=='b'):             #BITING FROST DAMAGE
+                    minunits = self.getRowMinUnits(side,row)
+                    if(minunits!=[]):
+                        unitpos = random.choice(minunits)
+                        self.board[side][row][unitpos]['power'] = self.board[side][row][unitpos]['power']-2
+                if(self.weather[side][row]=='f'):             #IMPENETRABLE FOG DAMAGE
+                    maxunits = self.getRowMaxUnits(side,row)
+                    if(maxunits!=[]):
+                        unitpos = random.choice(maxunits)
+                        self.board[side][row][unitpos]['power'] = self.board[side][row][unitpos]['power']-2
+        self.update()
 
     def display(self):                 #####DISPLAY THE CURRENT BOARD######
         print('===============')
@@ -203,10 +205,12 @@ class Player:
         self.num = num
         self.game = game
     def play(self,card,pos=0,target=False,row='m',sel=0):
+        self.game.tick('start',self.num)
         self.hand.use(self.game,self.hand.cards[CardPos(card,self.hand)],self.num,pos,target,row,sel)
+        self.game.tick('end',self.num)
         
 
-###################################                 CARD PROPERTIES FUNCTION
+###################################                 CARD PROPERTIES FUNCTIONS
 
 def isGolden(unit):
     if(unit['color']=='g'):
@@ -217,3 +221,9 @@ def isGolden(unit):
 #----------------------------------
 def CardPos(card,hand):
     return hand.cards.index(card)
+
+def TogTurn(turn):
+    if(turn==1):
+        return 0
+    else:
+        return 1
