@@ -4,8 +4,8 @@
 import random
 
 
-class Unit:
-    def __init__(self,name,base,deploy,color,row,loyal='L',doom=False,stub='N',dw='',tick='',vet=False):
+class Card:
+    def __init__(self,name,special=False,deploy='',color='b',doom=False,row='a',base=0,loyal='L',stub=False,dw='',tick='',vet=False):
         self.name = name
         self.base = base
         self.deploy = deploy
@@ -21,53 +21,43 @@ class Unit:
         self.lock = False
         self.tick = tick
         self.vet = vet
+        self.special = special
     def deployUnit(self,target = False):                                #DEPLOY ABILITY FOR CARD
         '''target optional'''
+        print(self.name)
         if(self.deploy[0])=='d' and target!= False and (not(isGolden(target))):
             target['power'] = target['power'] - int(self.deploy[1])
-####################################
-class Special:
-    def __init__(self,name,ability,color,doom=False):
-        self.name = name
-        self.doom=doom
-        self.ability = ability
-####################################
-class Card:
-    def __init__(self,name,unit,special=False):
-        self.name = name
-        self.unit = unit
-        self.special = special
+    def summon(self,game,player,row,pos):                                   #SUMMON UNIT FROM CARD
+        if(self.row=='a'):
+            game.board[player][row].insert(pos,{'name':self.name,'power':self.power,'color':self.color,'base':self.base,'unit':self})
+        else:
+            game.board[player][self.row].insert(pos,{'name':self.name,'power':self.power,'color':self.color,'base':self.base,
+                                                          'unit':self,'resi':self.resi,'lock':self.lock})
     def cast(self,game,player,target,sel=0):                                  #CAST FOR SPECIAL CARDS
-        if(self.unit.ability[0])=='d' and target!= False and not(isGolden(target)):               #DAMAGE
-            if(self.unit.ability[2])=='e':                              #SINGLE TARGET
-                target['power'] = target['power'] - int(self.unit.ability[1])
-            elif(self.unit.ability[2])=='r':                            #ROW DAMAGE
+        if(self.deploy[0])=='d' and target!= False and not(isGolden(target)):               #DAMAGE
+            if(self.deploy[2])=='e':                              #SINGLE TARGET
+                target['power'] = target['power'] - int(self.deploy[1])
+            elif(self.deploy[2])=='r':                            #ROW DAMAGE
                 side = int(target[0])
                 row = target[1]
                 for unitpos in game.getRowUnits(side,row):
-                    game.board[side][row][unitpos]['power'] = game.board[side][row][unitpos]['power'] - int(self.unit.ability[1])
-        elif(self.unit.ability[0])=='w' and target!=False:
-            game.weather[int(target[0])][target[1]] = self.unit.ability[1]  #CAST WEATHER
-        elif(self.unit.ability)=='wc':
+                    game.board[side][row][unitpos]['power'] = game.board[side][row][unitpos]['power'] - int(self.deploy[1])
+        elif(self.deploy[0])=='w' and target!=False:
+            game.weather[int(target[0])][target[1]] = self.deploy[1]  #CAST WEATHER
+        elif(self.deploy)=='wc':
             game.weather[player] = {"s":0,"r":0,"m":0}                           #CLEAR WEATHER       
-        elif(self.unit.ability[0])=='b' and target!=False and not(isGolden(target)):
-            target['power'] = target['power'] + int(self.unit.ability[1])   #BOOST SPECIAL CARD
-        elif(self.unit.ability[0])=='x':
-            self.unit.ability[sel].cast(game,player,target,sel)             #CAST INSIDE SPECIAL
-        elif(self.unit.ability[0])=='t' and target!= False and not(isGolden(target)):
-            target['power'] = target['base'] + int(self.unit.ability[1])
-            target['base'] = target['base'] + int(self.unit.ability[1])
-        if(self.unit.doom==False):
-            game.graveyard[player].insert(0,self.unit)                      #SEND SPECIAL TO GRAVEYARD
+        elif(self.deploy[0])=='b' and target!=False and not(isGolden(target)):
+            target['power'] = target['power'] + int(self.deploy[1])   #BOOST SPECIAL CARD
+        elif(self.deploy[0])=='x':
+            self.deploy[sel].cast(game,player,target,sel)             #CAST INSIDE SPECIAL
+        elif(self.deploy[0])=='t' and target!= False and not(isGolden(target)):
+            target['power'] = target['base'] + int(self.deploy[1])
+            target['base'] = target['base'] + int(self.deploy[1])
+        if(self.doom==False):
+            game.graveyard[player].insert(0,self)   
+
+####################################
             
-    def summon(self,game,player,row,pos):                                   #SUMMON UNIT FROM CARD
-        if(self.unit.row=='a'):
-            game.board[player][row].insert(pos,{'name':self.unit.name,'power':self.unit.power,'color':self.unit.color,'base':self.unit.base,'unit':self.unit})
-        else:
-            game.board[player][self.unit.row].insert(pos,{'name':self.unit.name,'power':self.unit.power,'color':self.unit.color,'base':self.unit.base,
-                                                          'unit':self.unit,'resi':self.unit.resi,'lock':self.unit.lock})
-
-
 #0 is self
 #1 is enemy
 ########################################################################################################
@@ -181,8 +171,8 @@ class Hand:
     def use(self,game,card,player,pos=0,target=False,row='m',sel=0):                   #USE CARD FROM HAND
         '''myHand.use(CurrentGame,myHand.cards[2],0)'''
         if(card.special==False):
-            if(card.unit.row!='a'):
-                row = card.unit.row
+            if(card.row!='a'):
+                row = card.row
             if(target!=False):
                 card.summon(game,player,row,pos)                    #SUMMON UNIT CARDS
                 game.board[player][row][pos]['unit'].deployUnit(target) #DEPLOY UNIT WITH TARGET
