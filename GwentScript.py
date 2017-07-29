@@ -27,13 +27,6 @@ class Card:
         print(self.name)
         if(self.deploy[0])=='d' and target!= False and (not(isGolden(target))):
             target['power'] = target['power'] - int(self.deploy[1])
-    def summon(self,game,player,row,pos):                                   #SUMMON UNIT FROM CARD
-        if(self.row=='a'):
-            game.board[player][row].insert(pos,{'name':self.name,'power':self.power,'color':self.color,'base':self.base,
-                                                'unit':self,'resi':self.resi,'lock':self.lock,'tick':self.tick})
-        else:
-            game.board[player][self.row].insert(pos,{'name':self.name,'power':self.power,'color':self.color,'base':self.base,
-                                                          'unit':self,'resi':self.resi,'lock':self.lock,'tick':self.tick})
     def cast(self,game,player,target,sel=0):                                  #CAST FOR SPECIAL CARDS
         if(self.deploy[0])=='d' and target!= False and not(isGolden(target)):               #DAMAGE
             if(self.deploy[2])=='e':                              #SINGLE TARGET
@@ -58,7 +51,7 @@ class Card:
             target['power'] = target['base'] - int(self.deploy[1])
             target['base'] = target['base'] - int(self.deploy[1])
         if(self.doom==False):
-            game.graveyard[player].insert(0,self)   
+            game.graveyard[player].insert(0,self)                                   #SEND TO GRAVEYARD  
 
 ####################################
             
@@ -189,25 +182,28 @@ class Hand:
         self.cards = cards
     def use(self,game,card,player,pos=0,target=False,row='m',sel=0):                   #USE CARD FROM HAND
         '''myHand.use(CurrentGame,myHand.cards[2],0)'''
-        if(card.special==False):
-            if(card.row!='a'):
-                row = card.row
+        if(card['special']==True):
+            card['unit'].cast(game,player,target,sel)                           #CAST SPECIAL CARDS
+        else:
+            if(card['row']!='a'):
+                row = card['row']
             if(target!=False):
-                card.summon(game,player,row,pos)                    #SUMMON UNIT CARDS
+                game.board[player][row].insert(pos,card)                  #SUMMON UNIT CARDS
                 game.board[player][row][pos]['unit'].deployUnit(target) #DEPLOY UNIT WITH TARGET
             elif(target==False):
-                card.summon(game,player,row,pos)
+                game.board[player][row].insert(pos,card)
                 game.board[player][row][pos]['unit'].deployUnit()       #DEPLOY UNIT TARGETLESS
-        elif(card.special==True):
-            card.cast(game,player,target,sel)                           #CAST SPECIAL CARDS
-        game.played[player].append(self.cards.pop(self.cards.index(card))) #REMOVE A CARD FROM HAND
     def display(self):
         for card in self.cards:
             print(card.name)
 ####################################    
 class Deck:
     def __init__(self,cards):
-        self.cards = cards
+        cardz=[]
+        for card in cards:
+            cardz.append({'name':card.name,'power':card.power,'color':card.color,'base':card.base,
+                                                'unit':card,'resi':card.resi,'lock':card.lock,'tick':card.tick,'special':card.special,'row':card.row})
+        self.cards = cardz[:]
     def display(self):
         for card in self.cards:
             print(card.name)
@@ -221,10 +217,11 @@ class Player:
         self.hand = hand
         self.num = num
         self.game = game
-    def play(self,card,pos=0,target=False,row='m',sel=0):
+    def play(self,cardpos,pos=0,target=False,row='m',sel=0):
         self.game.tick('start',self.num)
-        self.hand.use(self.game,self.hand.cards[CardPos(card,self.hand)],self.num,pos,target,row,sel)
+        self.hand.use(self.game,self.hand.cards.pop(cardpos),self.num,pos,target,row,sel)
         self.game.tick('end',self.num)
+        
         
 
 ###################################                 CARD PROPERTIES FUNCTIONS
