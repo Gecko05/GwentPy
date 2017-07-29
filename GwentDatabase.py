@@ -7,7 +7,7 @@ from GwentScript import *
 #       w = weather
 #       d = damage
 wyvern = Card("wyvern",False,"d3e",'b',False,'s',6)
-ancientFoglet = Card("ancientFoglet",False,' ','b',False,'a',7)
+ancientFoglet = Card("ancientFoglet",False,' ','b',False,'a',7,'L',False,'','sbf1')
 
 
 torrentialRain = Card("torrentialRain",True,"wr",'b')
@@ -17,7 +17,7 @@ alzursThunder = Card("alzursThunder",True,"d7e",'b')
 lacerate = Card("lacerate",True,"d3r",'b')
 swallowPotion = Card("swallowPotion",True,"b8u",'b')
 mutagen = Card("mutagen",True,"t3u",'b',True)
-spores = Card("mutagen",True,"w3u",'b',True)
+spores = Card("mutagen",True,"k3u",'b',True)
 mardroeme = Card("mardroeme",True,['x',mutagen,spores],'b',True)
 clearSkies = Card("clearSkies",True,"wc",'b',True)
 rally = Card("rally",True,"srbu",'b',)

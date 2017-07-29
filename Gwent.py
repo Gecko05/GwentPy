@@ -40,11 +40,11 @@ def SampleGame1():
     return 0
 
 def SampleGame2():
-    myDeck = Deck([ancientFoglet,ancientFoglet,ancientFoglet,ancientFoglet])
+    myDeck = Deck([ancientFoglet,impenetrableFog,ancientFoglet,ancientFoglet])
     myDeck.draw(myHand,4)
 
-    enemyDeck = Deck([torrentialRain,bitingFrost,impenetrableFog])
-    enemyDeck.draw(enemyHand,3)
+    enemyDeck = Deck([torrentialRain,bitingFrost,impenetrableFog,mardroeme])
+    enemyDeck.draw(enemyHand,4)
 
     me = Player(Game,myHand,0)
     enemy = Player(Game,enemyHand,1)
@@ -54,7 +54,7 @@ def SampleGame2():
     enemy.play(bitingFrost,0,'0m')
     Game.display()
     
-    me.play(ancientFoglet,0,False,'r')
+    me.play(impenetrableFog,0,'1r')
     Game.display()
     enemy.play(impenetrableFog,0,'0r')
     Game.display()
@@ -65,6 +65,8 @@ def SampleGame2():
     Game.display()
     
     me.play(ancientFoglet,0,False,'s')
+    Game.display()
+    enemy.play(mardroeme,0,Game.board[0]['r'][0],'m',2)
     Game.display()
 
     print(Game.score)

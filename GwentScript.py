@@ -29,10 +29,11 @@ class Card:
             target['power'] = target['power'] - int(self.deploy[1])
     def summon(self,game,player,row,pos):                                   #SUMMON UNIT FROM CARD
         if(self.row=='a'):
-            game.board[player][row].insert(pos,{'name':self.name,'power':self.power,'color':self.color,'base':self.base,'unit':self})
+            game.board[player][row].insert(pos,{'name':self.name,'power':self.power,'color':self.color,'base':self.base,
+                                                'unit':self,'resi':self.resi,'lock':self.lock,'tick':self.tick})
         else:
             game.board[player][self.row].insert(pos,{'name':self.name,'power':self.power,'color':self.color,'base':self.base,
-                                                          'unit':self,'resi':self.resi,'lock':self.lock})
+                                                          'unit':self,'resi':self.resi,'lock':self.lock,'tick':self.tick})
     def cast(self,game,player,target,sel=0):                                  #CAST FOR SPECIAL CARDS
         if(self.deploy[0])=='d' and target!= False and not(isGolden(target)):               #DAMAGE
             if(self.deploy[2])=='e':                              #SINGLE TARGET
@@ -45,14 +46,17 @@ class Card:
         elif(self.deploy[0])=='w' and target!=False:
             game.weather[int(target[0])][target[1]] = self.deploy[1]  #CAST WEATHER
         elif(self.deploy)=='wc':
-            game.weather[player] = {"s":0,"r":0,"m":0}                           #CLEAR WEATHER       
+            game.weather[player] = {"s":'',"r":'',"m":''}                           #CLEAR WEATHER       
         elif(self.deploy[0])=='b' and target!=False and not(isGolden(target)):
             target['power'] = target['power'] + int(self.deploy[1])   #BOOST SPECIAL CARD
         elif(self.deploy[0])=='x':
             self.deploy[sel].cast(game,player,target,sel)             #CAST INSIDE SPECIAL
-        elif(self.deploy[0])=='t' and target!= False and not(isGolden(target)):
+        elif(self.deploy[0])=='t' and target!= False and not(isGolden(target)):     #STRENGTHTEN UNIT
             target['power'] = target['base'] + int(self.deploy[1])
             target['base'] = target['base'] + int(self.deploy[1])
+        elif(self.deploy[0])=='k' and target!= False and not(isGolden(target)):     #WEAKEN UNIT
+            target['power'] = target['base'] - int(self.deploy[1])
+            target['base'] = target['base'] - int(self.deploy[1])
         if(self.doom==False):
             game.graveyard[player].insert(0,self)   
 
@@ -64,7 +68,7 @@ class Card:
 class GameBoard:
     def __init__(self):
         self.board = [{"s":[],"r":[],"m":[]},{"s":[],"r":[],"m":[]}]
-        self.weather = [{"s":0,"r":0,"m":0},{"s":0,"r":0,"m":0}]
+        self.weather = [{"s":'',"r":'',"m":''},{"s":'',"r":'',"m":''}]
         self.score = [0,0]
         self.played = {0:[],1:[]}
         self.graveyard = {0:[],1:[]}
@@ -75,7 +79,9 @@ class GameBoard:
         for side in self.board:
             for row in side:
                 for unit in side[row]:
-                    if(unit['power']<=0):
+                    if(unit['base']<=0):
+                        side[row].pop(side[row].index(unit))
+                    elif(unit['power']<=0):
                         if(unit['unit'].doom == True):
                             side[row].pop(side[row].index(unit))
                         else: 
@@ -90,7 +96,18 @@ class GameBoard:
                     self.score[self.board.index(side)] = self.score[self.board.index(side)] + unit['power']
                     
     def tick(self,turnphase,side):
-        if(turnphase=='start'):
+        if(turnphase=='start'): 
+            for row in self.board[side]:
+                for unit in self.board[side][row]:                  #FOR EVERY UNIT
+                    if(unit['lock']==False):                        #IF UNLOCKED
+                        if(unit['tick'][0]=='s'):                   #START OF TURN
+                            
+                            if(unit['tick'][1]=='b'):               #BOOST
+                                
+                                if(unit['tick'][2]=='f'):           #WEATHER FOG PRESENT
+                                    if 'f' in (self.weather[TogTurn(side)]['r'] or self.weather[TogTurn(side)]['m'] or self.weather[TogTurn(side)]['s']):
+                                        unit['power'] = unit['power'] + int(unit['tick'][3])                       
+            
             for row in self.board[side]:
                 if(self.weather[side][row]=='r'):             #TORRENTIAL RAIN WEATHER
                     minunits = self.getRowMinUnits(side,row)
