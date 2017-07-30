@@ -5,7 +5,7 @@ import random
 
 
 class Card:
-    def __init__(self,name,special=False,deploy='',color='b',doom=False,row='a',base=0,loyal='L',stub=False,dw='',tick='',vet=False):
+    def __init__(self,faction,name,special=False,deploy='',color='b',doom=False,row='a',base=0,loyal='L',stub=False,dw='',tick='',vet=False,timer='',ability=''):
         self.name = name
         self.base = base
         self.deploy = deploy
@@ -20,8 +20,12 @@ class Card:
         self.resi = False
         self.lock = False
         self.tick = tick
+        self.ability = ''
         self.vet = vet
+        self.faction = faction
+        self.timer = timer
         self.special = special
+        self.player = 0
     def deployUnit(self,target = False):                                #DEPLOY ABILITY FOR CARD
         '''target optional'''
         print(self.name)
@@ -196,13 +200,16 @@ class Hand:
     def display(self):
         for card in self.cards:
             print(card.name)
+    def mulligan(self,deck,cardpos):
+        deck.cards.insert(random.randint(0,len(deck.cards)),self.cards.pop(cardpos))
 ####################################    
 class Deck:
-    def __init__(self,cards):
+    def __init__(self,cards,num):
         cardz=[]
         for card in cards:
             cardz.append({'name':card.name,'power':card.power,'color':card.color,'base':card.base,
-                                                'unit':card,'resi':card.resi,'lock':card.lock,'tick':card.tick,'special':card.special,'row':card.row})
+                                                'unit':card,'resi':card.resi,'lock':card.lock,'tick':card.tick,'special':card.special,'row':card.row,
+                                                  'faction':card.faction,'ability':card.ability,'timer':card.timer,'player':num})
         self.cards = cardz[:]
     def display(self):
         for card in self.cards:
@@ -210,7 +217,8 @@ class Deck:
     def draw(self,hand,number):
         for i in range(0,number):
             hand.cards = hand.cards + [self.cards.pop(0)] #DRAW A CARD FROM DECK
-
+    def shuffle(self):
+        random.shuffle(self.cards)
 ###################################
 class Player:
     def __init__(self,game,hand,num):

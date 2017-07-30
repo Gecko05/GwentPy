@@ -4,15 +4,15 @@ Game = GameBoard()
 myHand = Hand([])
 enemyHand = Hand([])
 
-myDeck = Deck([ancientFoglet,impenetrableFog,ancientFoglet,ancientFoglet])
-myDeck.draw(myHand,4)
+myDeck = Deck([ancientFoglet,impenetrableFog,ancientFoglet,ancientFoglet],0)
+##myDeck.draw(myHand,4)
 
-enemyDeck = Deck([torrentialRain,bitingFrost,impenetrableFog,mardroeme])
-enemyDeck.draw(enemyHand,4)
+enemyDeck = Deck([torrentialRain,bitingFrost,impenetrableFog,mardroeme],1)
+##enemyDeck.draw(enemyHand,4)
 
-me = Player(Game,myHand,0)
-enemy = Player(Game,enemyHand,1)
-
+##me = Player(Game,myHand,0)
+##enemy = Player(Game,enemyHand,1)
+##
 ##me.play(0,0,False,'m')  #A FOGLET
 ##Game.display()
 ##enemy.play(0,0,'0m')    #RAIN
