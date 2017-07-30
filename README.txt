@@ -15,15 +15,15 @@ Implemented Features:
   Graveyards
   Played Cards
   Destroyed Units
+  Mulligan
+  Weakening/Strengthening
+  Boosting
 
 Working on:
-  Factions
   Resurrect Units
   Adjacent targeting
-  Weakening/Strengthening
   Demote
-  Mulligan
   Muster
   Armor
-  Boosting
+
   
