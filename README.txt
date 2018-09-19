@@ -1,7 +1,7 @@
 # GwentPy
 Gwent in Python
 
-This is a work in progress for "Gwent The Witcher Card Game" conversion to Python for AI testing purposes
+WIP
 Implemented Features:
   Decks
   Units
